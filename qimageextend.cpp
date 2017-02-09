@@ -210,6 +210,43 @@ QImageExtend QImageExtend::convolution(const double *kernel,
     return std::move(clone);
 }
 
+QImageExtend QImageExtend::resize(int level)
+{
+    QImageExtend clone(*this);
+    int size_k = level == 0? 1: 2 * level;
+    clone.image = std::make_unique<double[]>(int(this->getWidth()/size_k) * int(this->getHeight()/size_k));
+    clone.setWidth(int(this->getWidth()/size_k));
+    clone.setHeight(int(this->getHeight()/size_k));
+
+    for(int x = 0; x < this->getWidth(); x++){
+        for(int y = 0; y < this->getHeight(); y++){
+            clone.setPixel(int(x/size_k),int(y/size_k),this->getPixel(x,y));
+        }
+    }
+
+    return std::move(clone);
+}
+
+QImageExtend& QImageExtend::operator=(QImageExtend &data)
+{
+    if(data.getWidth() != 0 && data.getHeight() != 0){
+        this->image = std::make_unique<double[]>(data.getWidth() * data.getHeight());
+        this->setWidth(data.getWidth());
+        this->setHeight(data.getHeight());
+
+        this->format = data.format;
+        this->minOrigial = data.minOrigial;
+        this->maxOrigial = data.maxOrigial;
+
+        for(int x = 0; x < data.getWidth(); x++){
+            for(int y = 0; y < data.getHeight(); y++){
+                this->setPixel(x,y,data.getPixel(x,y));
+            }
+        }
+    }
+    return *this;
+}
+
 QImageExtend QImageExtend::convolution(const double *kernel,
                                        const double *kernel_2,
                                        int column, int row)
@@ -229,4 +266,9 @@ QImageExtend QImageExtend::convolution(const double *kernel,
     }
 
     return std::move(clone);
+}
+
+QImageExtend::QImageExtend()
+{
+
 }

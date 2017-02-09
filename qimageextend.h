@@ -146,6 +146,10 @@ public:
      * @param path - путь куда сохраняем картинку.
      */
     void saveImage(QString path);
+
+    QImageExtend resize(int level);
+    QImageExtend& operator=(QImageExtend &data);
+    QImageExtend();
 };
 
 #endif // QIMAGEEXTEND_H

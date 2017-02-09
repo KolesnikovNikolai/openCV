@@ -11,8 +11,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     qimageextend.cpp \
-    sobel.cpp
+    sobel.cpp \
+    gauss.cpp \
+    pyramid.cpp
 
 HEADERS += \
     qimageextend.h \
-    sobel.h
+    sobel.h \
+    gauss.h \
+    pyramid.h

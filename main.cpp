@@ -2,13 +2,16 @@
 
 #include <qimageextend.h>
 #include <sobel.h>
+#include <gauss.h>
+#include <pyramid.h>
 
 void lb1();
+void lb2();
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    lb1();
+    lb2();
     return a.exec();
 }
 /**
@@ -43,4 +46,36 @@ void lb1(){
                             sobel.getHeight(),
                             sobel.getWidth());
     soblel.saveImage("sobleGrad.bmp");
+}
+
+/**
+ * @brief lb2 - лабараторная №2
+ *
+ * Из заданного изображения построить гауссову пирамиду
+ * Реализовать функцию L(x,y,sigma)
+ * Реализовать отображение результатов
+ */
+void lb2(){
+    Gauss gauss;
+    //загрузка
+    QImageExtend resultImage("lb1.jpg");
+    double *kernel = gauss.getKernel(5,5,3);
+    QImageExtend gaussBlur = resultImage.convolution(kernel,
+                            gauss.getHeight(),
+                            gauss.getWidth());
+
+    gaussBlur.saveImage("gaussBlur.bmp");
+
+    int octavs = 5;
+    int layers = 3;
+    double sigma = 1.0;
+    Pyramid pyramid(resultImage, octavs, layers);
+    for(int i = 0; i< octavs; ++i) {
+        for(int j = 0; j< layers; ++j) {
+            pyramid
+                    .getImage(i, j, sigma)
+                    .saveImage(QString::number(i) + QString::number(j) + "gaussBlur.bmp");
+        }
+    }
+
 }
