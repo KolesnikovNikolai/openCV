@@ -13,12 +13,12 @@ SOURCES += main.cpp \
     qimageextend.cpp \
     sobel.cpp \
     gauss.cpp \
-    pyramid.cpp \
-    interestingpoints.cpp
+    octave.cpp \
+    octavelevel.cpp
 
 HEADERS += \
     qimageextend.h \
     sobel.h \
     gauss.h \
-    pyramid.h \
-    interestingpoints.h
+    octave.h \
+    octavelevel.h

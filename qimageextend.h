@@ -49,13 +49,6 @@ private:
      */
     double getMonoColor(QRgb color);
     /**
-     * @brief setPixel - задаем пиксель
-     * @param x - координата по X
-     * @param y - координата по Y
-     * @param color - цвет в сером
-     */
-    void setPixel(int x, int y, double color);
-    /**
      * @brief getColorPixel - получить цвет пикселя
      * @param x - координата по X
      * @param y - координата по Y
@@ -78,13 +71,6 @@ private:
      * @return - пиксель на границах
      */
     int reflect(int x, int maxX);
-    /**
-     * @brief getPixel -показать пиксель
-     * @param x - координата по X
-     * @param y - координата по Y
-     * @return - пиксель
-     */
-    double getPixel(int x, int y);
     /**
      * Переменные для нормирования
      */
@@ -146,6 +132,20 @@ public:
      * @param path - путь куда сохраняем картинку.
      */
     void saveImage(QString path);
+    /**
+     * @brief getPixel -показать пиксель
+     * @param x - координата по X
+     * @param y - координата по Y
+     * @return - пиксель
+     */
+    double getPixel(int x, int y);
+    /**
+     * @brief setPixel - задаем пиксель
+     * @param x - координата по X
+     * @param y - координата по Y
+     * @param color - цвет в сером
+     */
+    void setPixel(int x, int y, double color);
 
     QImageExtend resize(int level);
     QImageExtend& operator=(QImageExtend &data);

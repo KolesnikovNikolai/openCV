@@ -4,14 +4,16 @@
 #include <sobel.h>
 #include <gauss.h>
 #include <pyramid.h>
+#include <interestingpoints.h>
 
 void lb1();
 void lb2();
+void lb3();
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    lb2();
+    lb3();
     return a.exec();
 }
 /**
@@ -78,4 +80,19 @@ void lb2(){
         }
     }
 
+}
+
+void lb3(){
+    QImageExtend resultImage("lb1.jpg");
+    InterestingPoints points(resultImage);
+    points.moravek();
+    QImageExtend result = points.getImagePoints();
+    result.saveImage("moravek.png");
+    points.filterANMS(150);
+    points.getImagePoints().saveImage("harrisFilter.png");
+    points.harris();
+    result = points.getImagePoints();
+    result.saveImage("harris.png");
+    points.filterANMS(150);
+    points.getImagePoints().saveImage("harrisFilter.png");
 }
