@@ -30,29 +30,24 @@ void InterestingPoints::moravek() {
 }
 
 void InterestingPoints::harris() {
-    Sobel sobel;
-    Gauss gauss;
+    Kernel kernel;
     QImageExtend img(this->image);
     QImageExtend sobelX = this->image.convolution(
-                sobel.getKernel("X"),
-                sobel.getHeight(),
-                sobel.getWidth());
+                kernel.sobelX());
     QImageExtend sobelY = this->image.convolution(
-                sobel.getKernel("Y"),
-                sobel.getHeight(),
-                sobel.getWidth());
-    double *kernel = gauss.getKernel(this->gauss_size,this->gauss_size,this->sigma);
-    int size = gauss.getWidth() / 2;
+                kernel.sobelY());
+    kernel = kernel.gauss(this->sigma);
+    int size = kernel.getWidth() / 2;
     for (int y = 0; y < image.getHeight(); ++y) {
         for (int x = 0; x < image.getWidth(); ++x) {
             double a = 0, b = 0, c = 0;
-            for (int v = 0; v < gauss.getHeight(); ++v) {
-                for (int u = 0; u < gauss.getWidth(); ++u) {
-                    a += kernel[u*gauss.getHeight() + v]
+            for (int v = 0; v < kernel.getHeight(); ++v) {
+                for (int u = 0; u < kernel.getWidth(); ++u) {
+                    a += kernel.getValue(u*kernel.getHeight() + v)
                          * sobelX.getPixel(x+u-size, y+v-size) * sobelX.getPixel(x+u-size, y+v-size);
-                    b += kernel[u*gauss.getHeight() + v]
+                    b += kernel.getValue(u*kernel.getHeight() + v)
                          * sobelX.getPixel(x+u-size, y+v-size) * sobelY.getPixel(x+u-size, y+v-size);
-                    c += kernel[u*gauss.getHeight() + v]
+                    c += kernel.getValue(u*kernel.getHeight() + v)
                          * sobelY.getPixel(x+u-size, y+v-size) * sobelY.getPixel(x+u-size, y+v-size);
                 }
             }

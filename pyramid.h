@@ -2,7 +2,6 @@
 #define PYRAMID_H
 
 #include <qimageextend.h>
-#include <gauss.h>
 
 class Pyramid
 {

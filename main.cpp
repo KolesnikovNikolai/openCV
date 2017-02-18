@@ -1,10 +1,9 @@
 #include <QCoreApplication>
 
 #include <qimageextend.h>
-#include <sobel.h>
-#include <gauss.h>
 #include <pyramid.h>
 #include <interestingpoints.h>
+#include <kernel.h>
 
 void lb1();
 void lb2();
@@ -27,26 +26,20 @@ int main(int argc, char *argv[])
  *      NB! Нормирование
  */
 void lb1(){
-    Sobel sobel;
+    Kernel sobel;
     //загрузка
     QImageExtend resultImage(".//lb1.jpg");
     //сохранение в градациях серого
     resultImage.saveImage(".//lb1_res.bmp");
     //частная производная Собеля по Х
-    QImageExtend sobleX = resultImage.convolution(sobel.getKernel("X"),
-                            sobel.getHeight(),
-                            sobel.getWidth());
+    QImageExtend sobleX = resultImage.convolution(sobel.sobelX());
     sobleX.saveImage("sobleX.bmp");
     //частная производная Собеля по Y
-    QImageExtend sobleY = resultImage.convolution(sobel.getKernel("Y"),
-                            sobel.getHeight(),
-                            sobel.getWidth());
+    QImageExtend sobleY = resultImage.convolution(sobel.sobelY());
     sobleY.saveImage("sobleY.bmp");
     //оператор Собеля
-    QImageExtend soblel = resultImage.convolution(sobel.getKernel("X"),
-                            sobel.getKernel("Y"),
-                            sobel.getHeight(),
-                            sobel.getWidth());
+    QImageExtend soblel = resultImage.convolution(sobel.sobelX(),
+                            sobel.sobelY());
     soblel.saveImage("sobleGrad.bmp");
 }
 
@@ -58,13 +51,10 @@ void lb1(){
  * Реализовать отображение результатов
  */
 void lb2(){
-    Gauss gauss;
+    Kernel gauss;
     //загрузка
     QImageExtend resultImage("lb1.jpg");
-    double *kernel = gauss.getKernel(5,5,3);
-    QImageExtend gaussBlur = resultImage.convolution(kernel,
-                            gauss.getHeight(),
-                            gauss.getWidth());
+    QImageExtend gaussBlur = resultImage.convolution(gauss.gauss(3));
 
     gaussBlur.saveImage("gaussBlur.bmp");
 
@@ -89,7 +79,7 @@ void lb3(){
     QImageExtend result = points.getImagePoints();
     result.saveImage("moravek.png");
     points.filterANMS(150);
-    points.getImagePoints().saveImage("harrisFilter.png");
+    points.getImagePoints().saveImage("moravekFilter.png");
     points.harris();
     result = points.getImagePoints();
     result.saveImage("harris.png");

@@ -16,15 +16,15 @@ QImageExtend Pyramid::getImage(int octave, int level, double sigma)
         if (this->levels < level) {
             level = this->levels;
         }
-        Gauss gauss;
+        Kernel gauss;
 
         double k = pow(2.0, 1.0 / this->levels);
         k = sigma * pow(k, level);
         double local = octave == 0? k: k*2*octave;
-        double *kernel = gauss.getKernel(5,5,local);
 
         return this->image
-                .convolution(kernel, gauss.getHeight(), gauss.getWidth())
+                .convolution(gauss.gaussX(local))
+                .convolution(gauss.gaussY(local))
                 .resize(octave);
     }
 }

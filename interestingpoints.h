@@ -4,8 +4,6 @@
 #include <qimageextend.h>
 #include <math.h>
 #include <vector>
-#include <sobel.h>
-#include <gauss.h>
 
 struct Point {
     int x, y;
@@ -14,7 +12,7 @@ struct Point {
 
 class InterestingPoints {
 private:
-    const int window_option = 2, window_save = 1, sigma = 1, gauss_size = 5;
+    const int window_option = 2, window_save = 1, sigma = 1;
     const double moravek_step = 0.05, harris_step = 0.05, filter_ANMS = 0.9;
     QImageExtend image;
     std::vector<Point> points;

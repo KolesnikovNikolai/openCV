@@ -11,14 +11,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     qimageextend.cpp \
-    sobel.cpp \
-    gauss.cpp \
     pyramid.cpp \
-    interestingpoints.cpp
+    interestingpoints.cpp \
+    kernel.cpp
 
 HEADERS += \
     qimageextend.h \
-    sobel.h \
-    gauss.h \
     pyramid.h \
-    interestingpoints.h
+    interestingpoints.h \
+    kernel.h

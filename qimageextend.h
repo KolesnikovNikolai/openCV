@@ -6,6 +6,7 @@
 #include <QRgb>
 #include <QScopedPointer>
 #include <memory>
+#include <kernel.h>
 
 
 class QImageExtend
@@ -103,11 +104,9 @@ public:
     /**
      * @brief convolution - редактирование изображения с применением свертки
      * @param kernel - ядро свертки
-     * @param column - размерность свертки
-     * @param row - размерность свертки
      * @return - картинка с применением свертки
      */
-    QImageExtend convolution(const double* kernel, int column, int row);
+    QImageExtend convolution(const Kernel &kernel);
     /**
      * @brief convolution - редактирование изображения с использованием градиента свертки
      * @param kernel - ядро свертки 1
@@ -116,7 +115,7 @@ public:
      * @param row - размерность свертки
      * @return  - картинка с применением градиента свертки.
      */
-    QImageExtend convolution(const double* kernel, const double* kernel_2, int column, int row);
+    QImageExtend convolution(const Kernel &kernel, const Kernel &kernel_2);
     /**
      * @brief getWidth - получить ширину изображения
      * @return - ширина изображения

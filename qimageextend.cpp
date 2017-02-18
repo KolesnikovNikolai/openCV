@@ -178,8 +178,7 @@ QImageExtend& QImageExtend::operator=(QImageExtend&& data)
     return *this;
 }
 
-QImageExtend QImageExtend::convolution(const double *kernel,
-                                       int column, int row)
+QImageExtend QImageExtend::convolution(const Kernel &kernel)
 {
     QImageExtend clone(*this);
     int x0, x1, y0, y1, index;
@@ -189,16 +188,16 @@ QImageExtend QImageExtend::convolution(const double *kernel,
 
     for(int i = 0; i < width; i++){
         for(int j = 0; j < height; j++) {
-            x0 = i - (column / 2);
-            x1 = i + (column / 2);
-            y0 = j - (row / 2);
-            y1 = j + (row / 2);
+            x0 = i - (kernel.getHeight() / 2);
+            x1 = i + (kernel.getHeight() / 2);
+            y0 = j - (kernel.getWidth() / 2);
+            y1 = j + (kernel.getWidth() / 2);
             resultPixel = 0.0;
-            index = column * row - 1;
+            index = kernel.getWidth() * kernel.getHeight() - 1;
 
             for(int y = y0 ; y <= y1; y++) {
                 for(int x = x0; x <= x1; x++, index--){
-                    resultPixel += (kernel[index] * this->getPixel(x,y));
+                    resultPixel += (kernel.getValue(index) * this->getPixel(x,y));
                 }
             }
 
@@ -247,13 +246,12 @@ QImageExtend& QImageExtend::operator=(QImageExtend &data)
     return *this;
 }
 
-QImageExtend QImageExtend::convolution(const double *kernel,
-                                       const double *kernel_2,
-                                       int column, int row)
+QImageExtend QImageExtend::convolution(const Kernel &kernel,
+                                       const Kernel &kernel_2)
 {
     QImageExtend clone(*this);
-    QImageExtend image_1 = this->convolution(kernel, column, row);
-    QImageExtend image_2 = this->convolution(kernel_2, column, row);
+    QImageExtend image_1 = this->convolution(kernel);
+    QImageExtend image_2 = this->convolution(kernel_2);
     for(int x = 0; x < this->getWidth(); x++){
         for(int y = 0; y < this->getHeight(); y++) {
             clone.setPixel(x, y, sqrt(
