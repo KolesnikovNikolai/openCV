@@ -35,6 +35,7 @@ public:
     Kernel(Kernel &data);
     Kernel(Kernel&& data);
     Kernel& operator=(Kernel&& data);
+    void print();
 };
 
 #endif // KERNEL_H

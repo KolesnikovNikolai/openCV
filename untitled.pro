@@ -10,13 +10,13 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    qimageextend.cpp \
     pyramid.cpp \
     interestingpoints.cpp \
-    kernel.cpp
+    kernel.cpp \
+    image.cpp
 
 HEADERS += \
-    qimageextend.h \
     pyramid.h \
     interestingpoints.h \
-    kernel.h
+    kernel.h \
+    image.h

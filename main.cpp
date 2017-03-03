@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 
 #include <qimageextend.h>
+#include <image.h>
 #include <pyramid.h>
 #include <interestingpoints.h>
 #include <kernel.h>
@@ -28,19 +29,19 @@ int main(int argc, char *argv[])
 void lb1(){
     Kernel sobel;
     //загрузка
-    QImageExtend resultImage(".//lb1.jpg");
+    Image resultImage("lb1.jpg");
     //сохранение в градациях серого
-    resultImage.saveImage(".//lb1_res.bmp");
+    resultImage.save("lb1_res.bmp");
     //частная производная Собеля по Х
-    QImageExtend sobleX = resultImage.convolution(sobel.sobelX());
-    sobleX.saveImage("sobleX.bmp");
+    Image sobleX = resultImage.convolution(sobel.sobelX()).normal();
+    sobleX.save("sobleX.bmp");
     //частная производная Собеля по Y
-    QImageExtend sobleY = resultImage.convolution(sobel.sobelY());
-    sobleY.saveImage("sobleY.bmp");
+    Image sobleY = resultImage.convolution(sobel.sobelY()).normal();
+    sobleY.save("sobleY.bmp");
     //оператор Собеля
-    QImageExtend soblel = resultImage.convolution(sobel.sobelX(),
+    Image soblel = resultImage.convolution(sobel.sobelX(),
                             sobel.sobelY());
-    soblel.saveImage("sobleGrad.bmp");
+    soblel.save("sobleGrad.bmp");
 }
 
 /**
@@ -53,36 +54,35 @@ void lb1(){
 void lb2(){
     Kernel gauss;
     //загрузка
-    QImageExtend resultImage("lb1.jpg");
-    QImageExtend gaussBlur = resultImage.convolution(gauss.gauss(3));
+    Image resultImage("lb1.jpg");
 
-    gaussBlur.saveImage("gaussBlur.bmp");
+    Image gaussBlur = resultImage.convolution(gauss.gauss(3));
+
+    gaussBlur.save("gaussBlur.bmp");
 
     int octavs = 5;
     int layers = 3;
-    double sigma = 1.0;
     Pyramid pyramid(resultImage, octavs, layers);
     for(int i = 0; i< octavs; ++i) {
         for(int j = 0; j< layers; ++j) {
             pyramid
-                    .getImage(i, j, sigma)
-                    .saveImage(QString::number(i) + QString::number(j) + "gaussBlur.bmp");
+                    .getImage(i, j)
+                    .save(QString::number(j) + QString::number(i) + "gaussBlur.bmp");
         }
     }
 
 }
 
 void lb3(){
-    QImageExtend resultImage("lb1.jpg");
+    Image resultImage("lb1.jpg");
     InterestingPoints points(resultImage);
-    points.moravek();
-    QImageExtend result = points.getImagePoints();
-    result.saveImage("moravek.png");
-    points.filterANMS(150);
-    points.getImagePoints().saveImage("moravekFilter.png");
-    points.harris();
+    points.moravek(0.05);
+    Image result = points.getImagePoints();
+    result.save("moravek.png");
+    points.filterANMS(150).save("moravekFilter150.bmp");
+    points.filterANMS(200).save("moravekFilter200.bmp");
+    points.harris(0.05);
     result = points.getImagePoints();
-    result.saveImage("harris.png");
-    points.filterANMS(150);
-    points.getImagePoints().saveImage("harrisFilter.png");
+    result.save("harris.png");
+    points.filterANMS(150).save("harrisFilter150.bmp");
 }

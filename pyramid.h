@@ -1,17 +1,19 @@
 #ifndef PYRAMID_H
 #define PYRAMID_H
 
-#include <qimageextend.h>
+#include <vector>
+#include <image.h>
 
 class Pyramid
 {
 private:
     int levels;
     int octavs;
-    QImageExtend image;
+    std::vector<Image> images;
+
 public:
-    Pyramid(QImageExtend &image, int octavs, int levels);
-    QImageExtend getImage(int octave, int level, double sigma);
+    Pyramid(Image &image, int octavs, int levels);
+    Image getImage(int octave, int level);
 };
 
 #endif // PYRAMID_H

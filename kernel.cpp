@@ -14,13 +14,13 @@ Kernel::Kernel(int width, int height)
 
 Kernel Kernel::gauss(double sigma) const
 {
-    int size = (int) round(sigma);
+    int size = (int) round(sigma * 5);
     Kernel kernel(size * 2 + 1, size * 2 + 1);
-    for (int y = 0; y <= 2 * size; ++y)
-        for (int x = 0; x <= 2 * size; ++x)
+    for (int x = 0; x <= 2 * size; ++x)
+        for (int y = 0; y <= 2 * size; ++y)
             kernel.setValue(x,
                             y,
-                            exp(-(x * x + y * y) / (2 * sigma * sigma)) / sqrt(2 * M_PI * sigma * sigma));
+                            exp(-((x-size) * (x-size) + (y-size) * (y-size)) / (2 * sigma * sigma)) / (2 * M_PI * sigma * sigma));
     return kernel;
 }
 
@@ -89,19 +89,19 @@ Kernel& Kernel::operator=(Kernel&& data)
 
 Kernel Kernel::gaussX(double sigma) const
 {
-    int size = (int) round(sigma);
+    int size = (int) round(sigma * 5);
     Kernel kernel(size * 2 + 1, 1);
     for (int i = 0; i <= 2 * size; ++i)
-        kernel.setValue(i, 0, exp(-i*i/(2*sigma*sigma)) / (sqrt(2 * M_PI) * sigma));
+        kernel.setValue(i, 0, exp(-((i-size)*(i-size))/(2*sigma*sigma)) / (sqrt(2 * M_PI) * sigma));
     return kernel;
 }
 
 Kernel Kernel::gaussY(double sigma) const
 {
-    int size = (int) round(sigma);
+    int size = (int) round(sigma * 5);
     Kernel kernel(1, size * 2 + 1);
     for (int i = 0; i <= 2 * size; ++i)
-        kernel.setValue(0, i, exp(-i*i/(2*sigma*sigma)) / (sqrt(2 * M_PI) * sigma));
+        kernel.setValue(0, i, exp(-((i-size)*(i-size))/(2*sigma*sigma)) / (sqrt(2 * M_PI) * sigma));
     return kernel;
 }
 
@@ -131,4 +131,14 @@ Kernel Kernel::sobelY() const
         for (int x = 0; x < 3; ++x)
             kernel.setValue(x,y, kerArr[x*3 + y]);
     return kernel;
+}
+
+void Kernel::print()
+{
+    for (int x = 0; x < this->width; ++x) {
+        for (int y = 0; y < this->height; ++y) {
+            printf("%f ", this->getValue(x, y));
+        }
+        printf("\n");
+    }
 }
