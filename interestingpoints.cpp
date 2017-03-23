@@ -5,31 +5,31 @@ InterestingPoints::InterestingPoints(Image &image)
     this->image = image;
 }
 
-bool InterestingPoints::comparePoint(Point a, Point b)
+std::vector<Point> InterestingPoints::getPointsANMS(int count, double robust)
 {
-    return (a.value < b.value);
+    std::vector<Point> p = this->points;
+    int r = 0;
+    while (count < p.size() && r < std::max(this->image.getHeight(), this->image.getWidth())) {
+        for(int x = 0; x < p.size(); ++x) {
+            for(int y = 0; y < p.size(); ++y) {
+                if (x != y) {
+                    double size = sqrt((p[x].x - p[y].x) * (p[x].x - p[y].x) + (p[x].y - p[y].y) * (p[x].y - p[y].y));
+                    if (size <= r && p[x].value < robust * p[y].value) {
+                        p.erase(p.begin() + x);
+                        --x;
+                        break;
+                    }
+                }
+            }
+        }
+        ++r;
+    }
+    return p;
 }
 
 Image InterestingPoints::filterANMS(int count, double robust, int window_size) {
     if(count < this->points.size()) {
-        std::vector<Point> p = this->points;
-        int r = 0;
-        while (count < p.size()) {
-            for(int x = 0; x < p.size(); ++x) {
-                for(int y = 0; y < p.size(); ++y) {
-                    if (x != y) {
-                        double size = sqrt((p[x].x - p[y].x) * (p[x].x - p[y].x) + (p[x].y - p[y].y) * (p[x].y - p[y].y));
-                        if (size <= r && p[x].value < robust * p[y].value) {
-                            p.erase(p.begin() + x);
-                            --x;
-                            break;
-                        }
-                    }
-                }
-            }
-            ++r;
-        }
-        return this->getImagePoints(window_size, p);
+        return this->getImagePoints(window_size, this->getPointsANMS(count, robust));
     } else {
         return this->getImagePoints(window_size);
     }

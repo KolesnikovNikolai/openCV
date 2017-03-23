@@ -23,6 +23,13 @@ Image::Image(QString path)
     }
 }
 
+Image::Image(int width, int height)
+{
+        this->width = width;
+        this->height = height;
+        this->pixels = std::make_unique<double[]>(this->height * this->width);
+}
+
 void Image::setPixel(int x, int y, int r, int g, int b)
 {
     this->pixels[(x * this->height) + y] = std::min(1.0, (0.299 * r + 0.587 * g + 0.114 * b) / 255.0);
@@ -53,6 +60,25 @@ void Image::save(QString path)
             value = this->getPixel(x, y) * 255.0;
             image.setPixel(x, y, qRgb(value, value, value));
         }
+    }
+    image.save(path);
+    printf("\nsave");
+}
+
+void Image::save(QString path, std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> lines)
+{
+    QImage image = QImage(this->width, this->height, QImage::Format_RGB32);
+    int value;
+    for (int x = 0; x < this->width; ++x) {
+        for (int y = 0; y < this->height; ++y) {
+            value = this->getPixel(x, y) * 255.0;
+            image.setPixel(x, y, qRgb(value, value, value));
+        }
+    }
+    QPainter draw(&image);
+    for (std::pair<std::pair<int, int>, std::pair<int, int>> line : lines) {
+        draw.setPen(QColor(abs(rand()) % 256, abs(rand()) % 256, abs(rand()) % 256));
+        draw.drawLine(line.first.first, line.first.second, line.second.first, line.second.second);
     }
     image.save(path);
     printf("\nsave");

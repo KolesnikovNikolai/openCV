@@ -4,6 +4,7 @@
 #include <memory>
 #include <QString>
 #include <QtGui/QImage>
+#include <QPainter>
 #include <kernel.h>
 
 class Image
@@ -15,6 +16,7 @@ private:
     double max();
 public:
     Image(QString path);
+    Image(int width, int height);
     Image(Image &data);
     Image(Image&& data);
     Image& operator=(Image&& data);
@@ -22,6 +24,7 @@ public:
     void setPixel(int x, int y, int r, int g, int b);
     double getPixel(int x, int y);
     void save(QString path);
+    void save(QString path, std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> lines);
     int getWidth() const;
     int getHeight() const;
     Image convolution(const Kernel &kernel);

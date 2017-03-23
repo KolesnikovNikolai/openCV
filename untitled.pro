@@ -13,10 +13,12 @@ SOURCES += main.cpp \
     pyramid.cpp \
     interestingpoints.cpp \
     kernel.cpp \
-    image.cpp
+    image.cpp \
+    descriptor.cpp
 
 HEADERS += \
     pyramid.h \
     interestingpoints.h \
     kernel.h \
-    image.h
+    image.h \
+    descriptor.h

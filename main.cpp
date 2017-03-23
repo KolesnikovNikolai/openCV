@@ -1,19 +1,20 @@
 #include <QCoreApplication>
 
-#include <qimageextend.h>
 #include <image.h>
 #include <pyramid.h>
 #include <interestingpoints.h>
 #include <kernel.h>
+#include <descriptor.h>
 
 void lb1();
 void lb2();
 void lb3();
+void lb4();
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    lb3();
+    lb4();
     return a.exec();
 }
 /**
@@ -76,7 +77,7 @@ void lb2(){
 void lb3(){
     Image resultImage("lb1.jpg");
     InterestingPoints points(resultImage);
-    points.moravek(0.05);
+    //points.moravek(0.05);
     Image result = points.getImagePoints();
     result.save("moravek.png");
     points.filterANMS(150).save("moravekFilter150.bmp");
@@ -85,4 +86,22 @@ void lb3(){
     result = points.getImagePoints();
     result.save("harris.png");
     points.filterANMS(150).save("harrisFilter150.bmp");
+}
+
+void lb4(){
+    Image im1("lb4_1.jpg"), im2("lb4_2.jpg");
+    Image res = Image(im1.getWidth() + im2.getWidth(), std::max(im1.getHeight(), im2.getHeight()));
+    for (int x = 0; x < im1.getWidth(); ++x) {
+        for (int y = 0; y < im1.getHeight(); ++y) {
+            res.setPixel(x, y, im1.getPixel(x, y));
+        }
+    }
+    for (int x = 0; x < im2.getWidth(); ++x) {
+        for (int y = 0; y < im2.getHeight(); ++y) {
+            res.setPixel(im1.getWidth() + x, y, im2.getPixel(x, y));
+        }
+    }
+    Descriptor des1(im1, 200), des2(im2, 200);
+    std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> points = des1.getDescriptPoints(des2);
+    res.save("lb4.jpg", points);
 }
