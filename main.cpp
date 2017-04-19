@@ -68,7 +68,7 @@ void lb2(){
         for(int j = 0; j< layers; ++j) {
             pyramid
                     .getImage(i, j)
-                    .save(QString::number(j) + QString::number(i) + "gaussBlur.bmp");
+                    .save(QString::number(i) + QString::number(j) + "gaussBlur.bmp");
         }
     }
 

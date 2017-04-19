@@ -8,29 +8,37 @@ Pyramid::Pyramid(Image &image, int octavs, int levels)
     double s0 = 0.5;
     double k = pow(2.0, 1.0 / this->levels);
     double sk = s0;
-    for (int i = 0; i < this->levels; ++i) {
+    double delta_sigma;
+    double delta_sigma_level_prev = std::sqrt(2.56 -  s0 * s0);
+    for (int i = 0; i < this->octavs; ++i) {
+        sk = delta_sigma_level_prev;
         if (i != 0) {
+            sk = sk * k;
+            delta_sigma = std::sqrt(sk * sk - delta_sigma_level_prev * delta_sigma_level_prev);
             this->images.push_back(
-                this->images[(i-1) * this->octavs]
+                this->images[(i-1) * this->levels]
+                    .convolution(gauss.gaussX(delta_sigma))
+                    .convolution(gauss.gaussY(delta_sigma))
                     .resize(1)
-                    .convolution(gauss.gaussX(s0 * pow(2.0, i)))
-                    .convolution(gauss.gaussY(s0 * pow(2.0, i)))
             );
+            sk /= 2;
+            delta_sigma_level_prev = sk;
         } else {
             this->images.push_back(
                 image
-                    .convolution(gauss.gaussX(s0))
-                    .convolution(gauss.gaussY(s0))
+                    .convolution(gauss.gaussX(delta_sigma_level_prev))
+                    .convolution(gauss.gaussY(delta_sigma_level_prev))
             );
         }
-        sk = s0;
-        for (int j = 0; j < this->octavs-1; ++j) {
+        for (int j = 0; j < this->levels-1; ++j) {
             sk = sk * k;
+            delta_sigma = std::sqrt(sk * sk - delta_sigma_level_prev * delta_sigma_level_prev);
             this->images.push_back(
-                this->images[i * this->octavs + j]
-                    .convolution(gauss.gaussX(sk))
-                    .convolution(gauss.gaussY(sk))
+                this->images[i * this->levels + j]
+                    .convolution(gauss.gaussX(delta_sigma))
+                    .convolution(gauss.gaussY(delta_sigma))
             );
+            delta_sigma_level_prev = sk;
         }
     }
 }
@@ -43,5 +51,5 @@ Image Pyramid::getImage(int octave, int level)
     if (this->levels < level) {
         level = this->levels;
     }
-    return this->images[level * this->octavs + octave];
+    return this->images[octave * this->levels + level];
 }
